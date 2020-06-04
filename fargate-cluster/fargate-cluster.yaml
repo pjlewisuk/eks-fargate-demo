@@ -1,0 +1,130 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: eks-fargate-demo
+  region: eu-west-1
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: alb-ingress-controller
+      namespace: kube-system
+    attachPolicy: 
+      Version: "2012-10-17"
+      Statement:
+      - Effect: Allow
+        Action:
+        - "acm:DescribeCertificate"
+        - "acm:ListCertificates"
+        - "acm:GetCertificate"
+        - "ec2:AuthorizeSecurityGroupIngress"
+        - "ec2:CreateSecurityGroup"
+        - "ec2:CreateTags"
+        - "ec2:DeleteTags"
+        - "ec2:DeleteSecurityGroup"
+        - "ec2:DescribeAccountAttributes"
+        - "ec2:DescribeAddresses"
+        - "ec2:DescribeInstances"
+        - "ec2:DescribeInstanceStatus"
+        - "ec2:DescribeInternetGateways"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DescribeSecurityGroups"
+        - "ec2:DescribeSubnets"
+        - "ec2:DescribeTags"
+        - "ec2:DescribeVpcs"
+        - "ec2:ModifyInstanceAttribute"
+        - "ec2:ModifyNetworkInterfaceAttribute"
+        - "ec2:RevokeSecurityGroupIngress"
+        - "elasticloadbalancing:AddListenerCertificates"
+        - "elasticloadbalancing:AddTags"
+        - "elasticloadbalancing:CreateListener"
+        - "elasticloadbalancing:CreateLoadBalancer"
+        - "elasticloadbalancing:CreateRule"
+        - "elasticloadbalancing:CreateTargetGroup"
+        - "elasticloadbalancing:DeleteListener"
+        - "elasticloadbalancing:DeleteLoadBalancer"
+        - "elasticloadbalancing:DeleteRule"
+        - "elasticloadbalancing:DeleteTargetGroup"
+        - "elasticloadbalancing:DeregisterTargets"
+        - "elasticloadbalancing:DescribeListenerCertificates"
+        - "elasticloadbalancing:DescribeListeners"
+        - "elasticloadbalancing:DescribeLoadBalancers"
+        - "elasticloadbalancing:DescribeLoadBalancerAttributes"
+        - "elasticloadbalancing:DescribeRules"
+        - "elasticloadbalancing:DescribeSSLPolicies"
+        - "elasticloadbalancing:DescribeTags"
+        - "elasticloadbalancing:DescribeTargetGroups"
+        - "elasticloadbalancing:DescribeTargetGroupAttributes"
+        - "elasticloadbalancing:DescribeTargetHealth"
+        - "elasticloadbalancing:ModifyListener"
+        - "elasticloadbalancing:ModifyLoadBalancerAttributes"
+        - "elasticloadbalancing:ModifyRule"
+        - "elasticloadbalancing:ModifyTargetGroup"
+        - "elasticloadbalancing:ModifyTargetGroupAttributes"
+        - "elasticloadbalancing:RegisterTargets"
+        - "elasticloadbalancing:RemoveListenerCertificates"
+        - "elasticloadbalancing:RemoveTags"
+        - "elasticloadbalancing:SetIpAddressType"
+        - "elasticloadbalancing:SetSecurityGroups"
+        - "elasticloadbalancing:SetSubnets"
+        - "elasticloadbalancing:SetWebACL"
+        - "iam:CreateServiceLinkedRole"
+        - "iam:GetServerCertificate"
+        - "iam:ListServerCertificates"
+        - "cognito-idp:DescribeUserPoolClient"
+        - "waf-regional:GetWebACLForResource"
+        - "waf-regional:GetWebACL"
+        - "waf-regional:AssociateWebACL"
+        - "waf-regional:DisassociateWebACL"
+        - "tag:GetResources"
+        - "tag:TagResources"
+        - "waf:GetWebACL"
+        Resource: "*"
+  - metadata:
+      name: external-dns
+      namespace: kube-system
+    attachPolicy: 
+      Version: "2012-10-17"
+      Statement:
+      - Effect: Allow
+        Action:
+        - "route53:ChangeResourceRecordSets"
+        Resource: "arn:aws:route53:::hostedzone/*"
+      - Effect: Allow
+        Action:
+        - "route53:ListHostedZones"
+        - "route53:ListResourceRecordSets"
+        Resource: "*"
+
+fargateProfiles:
+  - name: default
+    selectors:
+      - namespace: code-server
+      - namespace: fargate
+      - namespace: kube-system
+        labels:
+          scheduler: fargate
+
+managedNodeGroups:
+  - name: managed-ng-0
+    minSize: 3
+    maxSize: 12
+    desiredCapacity: 3
+    volumeSize: 20
+    labels: {role: worker}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        albIngress: true
+        appMesh: true
+        autoScaler: true
+        certManager: true
+        cloudWatch: true
+        externalDNS: true
+        xRay: true
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]

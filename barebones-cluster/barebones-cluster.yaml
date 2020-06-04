@@ -1,0 +1,15 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: fargate-barebones
+  region: YOUR_AWS_REGION
+
+fargateProfiles:
+  - name: default
+    selectors:
+      - namespace: fargate
+      - namespace: kube-system
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
