@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: sock-shop
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts-db
@@ -13,6 +13,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: carts-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -59,7 +67,7 @@ spec:
   selector:
     name: carts-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts
@@ -69,6 +77,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: carts
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -119,7 +135,7 @@ spec:
   selector:
     name: carts
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue-db
@@ -129,6 +145,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: catalogue-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -164,7 +188,7 @@ spec:
   selector:
     name: catalogue-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
@@ -174,6 +198,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: catalogue
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -212,7 +244,7 @@ spec:
   selector:
     name: catalogue
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front-end
@@ -222,6 +254,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: front-end
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -287,7 +327,7 @@ spec:
             serviceName: front-end
             servicePort: 80
 ---  
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders-db
@@ -297,6 +337,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: orders-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -343,7 +391,7 @@ spec:
   selector:
     name: orders-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders
@@ -351,7 +399,15 @@ metadata:
     name: orders
   namespace: sock-shop
 spec:
-  replicas: 3
+  replicas: 1
+  selector:
+    matchLabels:
+      name: orders
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -401,7 +457,7 @@ spec:
   selector:
     name: orders
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment
@@ -411,6 +467,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: payment
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -449,7 +513,7 @@ spec:
   selector:
     name: payment
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: queue-master
@@ -458,6 +522,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: queue-master
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -488,7 +560,7 @@ spec:
   selector:
     name: queue-master
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
@@ -498,6 +570,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmq
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -537,7 +617,7 @@ spec:
   selector:
     name: rabbitmq
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shipping
@@ -546,6 +626,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: shipping
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -595,7 +683,7 @@ spec:
   selector:
     name: shipping
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-db
@@ -605,6 +693,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: user-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -651,7 +747,7 @@ spec:
   selector:
     name: user-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user
@@ -661,6 +757,14 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: user
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
