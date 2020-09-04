@@ -3,17 +3,20 @@ kind: Namespace
 metadata:
   name: fargate
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-nginx
   namespace: fargate
 spec:
+  selector:
+    matchLabels:
+      run: my-nginx-fargate
   replicas: 2
   template:
     metadata:
       labels:
-        run: my-nginx
+        run: my-nginx-fargate
     spec:
       containers:
       - name: my-nginx
